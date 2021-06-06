@@ -7,9 +7,13 @@ package main;
 
 import Classes.DaftarMenu;
 import Classes.Kuah;
+import Classes.Menu;
 import Classes.Minuman;
+import Classes.Pesanan;
 import Classes.Ramen;
 import Classes.Toping;
+import Classes.Transaksi;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -26,7 +30,7 @@ public class AplikasiKasirMain {
     //init
     Scanner input = new Scanner(System.in);
     //tambahkan 
-    String no_transaksi, nama_pemesan, no_meja = "";
+    String no_transaksi, nama_pemesan,tanggal,  no_meja = "";
     String transaksi = "", pesan_lagi = "", keterangan = "", makan_ditempat = "";
     int jumlah_pesanan, no_menu;
     //selesai
@@ -37,7 +41,71 @@ public class AplikasiKasirMain {
         System.out.println("================TRANSAKSI================");
         
         //ambil data transaksi
-        System.out.println("");
+        System.out.print("No transaksi : ");
+        no_transaksi = input.next();
+        System.out.print("pemesan : ");
+        nama_pemesan = input.next();
+        System.out.print("Tanggal : {dd-mm-yy}");
+        tanggal = input.next();
+        System.out.print("Makan Ditempat?{Y/N}");
+        makan_ditempat = input.next();
+        
+        if(makan_ditempat.equalsIgnoreCase("Y")){
+            System.out.print("Nomor Meja : ");
+            no_meja = input.next();
+        }
+        Transaksi trans = new Transaksi(no_transaksi, nama_pemesan, tanggal, no_meja);
+        System.out.println("==========Pesanan==========");
+        int no_kuah;
+        do{
+            //ambil menu berdasarkan nomor urut yg dipilih
+            Menu menu_yang_dipilih = app.daftarMenu.pilihMenu();
+            
+            jumlah_pesanan = (int) app.cekInputNumber("Jumlah : ");
+            
+            //bbuat pesanan
+            Pesanan pesanan = new Pesanan(menu_yang_dipilih, jumlah_pesanan);
+            trans.tambahPesanan(pesanan);
+            //khusu untuk menu ramen, pesanan kuahnya diinput langsung juga
+            if(menu_yang_dipilih.getKategori().equals("Ramen")){
+                int jumlah_ramen = jumlah_pesanan;
+                do{
+                    Menu kuah_yang_dipilih = app.daftarMenu.pilihKuah();
+                    
+                    System.out.print("Level : (0 - 5) : ");
+                    String level = input.next();
+                    
+                    int jumlah_kuah = 0;
+                    do{
+                        jumlah_kuah = (int) app.cekInputNumber("jumlah : ");
+                        
+                        if (jumlah_kuah > jumlah_ramen){
+                            System.out.println("(err)Jumlah kuah melebihi ramen yang dipesan!!");                        
+                        }else{
+                            break;
+                        }
+                    }while (jumlah_kuah > jumlah_ramen);
+                    //set pesanan kuah
+                   Pesanan pesanan_kuah = new Pesanan(kuah_yang_dipilih, jumlah_kuah);
+                   pesanan_kuah.setKeterangan("level" + level);
+                   //tambahkan pesanan kuahg ke transaksi
+                   trans.tambahPesanan(pesanan_kuah);
+                   
+                   jumlah_ramen -= jumlah_kuah;
+                }while(jumlah_ramen>0);
+              
+            }else{
+                System.out.print("Keterangan (jika kosong) : ");
+                keterangan = input.next();
+            }
+            
+            if(!keterangan.equals("-")){
+                pesanan.setKeterangan(keterangan);
+            }
+            //konfirmasi mau tambah pesanan lagi atau tidak
+            System.out.print("Tambah Pesanan lagi? (Y/N)");
+            pesan_lagi = input.next();
+        }while (pesan_lagi.equalsIgnoreCase("Y"));
     }
     public void generateDaftarMenu() { 
      daftarMenu = new DaftarMenu();
@@ -64,5 +132,17 @@ public class AplikasiKasirMain {
         daftarMenu.tambahMenu(new Minuman("Vietnam Dripp", 14000));
 
         daftarMenu.tampilDaftarMenu();
+    }
+     public double cekInputNumber(String label){
+        try {
+            Scanner get_input = new Scanner(System.in);
+            System.out.print(label);
+            double nilai = get_input.nextDouble();
+
+            return nilai;
+        } catch (InputMismatchException ex){
+            System.out.println("[Err] Harap masukkan angka");
+            return cekInputNumber(label);
+        }
     }
 }

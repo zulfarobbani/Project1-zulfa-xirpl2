@@ -31,7 +31,7 @@ public class AplikasiKasirMain {
     Scanner input = new Scanner(System.in);
     //tambahkan 
     String no_transaksi, nama_pemesan,tanggal,  no_meja = "";
-    String transaksi = "", pesan_lagi = "", keterangan = "", makan_ditempat = "";
+    String transaksi_lagi = "", pesan_lagi = "", keterangan = "", makan_ditempat = "";
     int jumlah_pesanan, no_menu;
     //selesai
     AplikasiKasirMain app = new AplikasiKasirMain();
@@ -39,7 +39,7 @@ public class AplikasiKasirMain {
      
      //transaksi mulai
         System.out.println("================TRANSAKSI================");
-        
+       do{ 
         //ambil data transaksi
         System.out.print("No transaksi : ");
         no_transaksi = input.next();
@@ -54,6 +54,7 @@ public class AplikasiKasirMain {
             System.out.print("Nomor Meja : ");
             no_meja = input.next();
         }
+       
         Transaksi trans = new Transaksi(no_transaksi, nama_pemesan, tanggal, no_meja);
         System.out.println("==========Pesanan==========");
         int no_kuah;
@@ -135,6 +136,9 @@ public class AplikasiKasirMain {
                 break;
             }
         }while(kembalian<0);
+         System.out.println("Lakukan Transaksi Lagi? [Y/N]");
+        transaksi_lagi = input.next();
+       }while(transaksi_lagi.equalsIgnoreCase("Y"));
         System.out.println("==========TERIMA KASIH==========");
     } 
     public void generateDaftarMenu() { 

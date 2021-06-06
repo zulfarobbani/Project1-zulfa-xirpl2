@@ -31,6 +31,13 @@ public class AplikasiKasirMain {
     int jumlah_pesanan, no_menu;
     //selesai
     AplikasiKasirMain app = new AplikasiKasirMain();
+     app.generateDaftarMenu();
+     
+     //transaksi mulai
+        System.out.println("================TRANSAKSI================");
+        
+        //ambil data transaksi
+        System.out.println("");
     }
     public void generateDaftarMenu() { 
      daftarMenu = new DaftarMenu();
